@@ -1,19 +1,26 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String?
-  status      Status   @default(PENDING)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  status      Status    @default(PENDING)
+  dateStarted DateTime  @default(now())
+  dueDate     DateTime?
+  priority    Priority  @default(NORMAL)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 enum Status {
@@ -22,21 +29,30 @@ enum Status {
   COMPLETED
 }
 
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+}
+
 model User {
-  id            Int       @id @default(autoincrement())
+  id            String          @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String          @unique
   emailVerified DateTime?
-  password      String
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  Tasks         Task[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
-  id                Int     @id @default(autoincrement())
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -47,20 +63,45 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  userId            Int
-  user              User    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
 }
 
 model Session {
-  id           Int      @id @default(autoincrement())
   sessionToken String   @unique
+  userId       String
   expires      DateTime
-  userId       Int
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
   identifier String
-  token      String   @unique
+  token      String
   expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
 }

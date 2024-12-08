@@ -8,7 +8,7 @@ const LoginPage = async () => {
   const session = await auth();
 
   if (session) {
-    redirect("/");
+    return redirect("/");
   }
 
   return (
@@ -19,12 +19,12 @@ const LoginPage = async () => {
           src="/logo.svg"
           width={173}
           height={39}
-          alt="Node Finance AI"
+          alt="Task Master"
           className="mb-8"
         />
         <h1 className="mb-3 text-4xl font-bold">Bem-vindo</h1>
         <p className="mb-8 text-muted-foreground">
-          A Task Master é uma plataforma de gerenciamento tarefa.
+          A Task Master é uma plataforma de gerenciamento de tarefas.
         </p>
         <form
           action={async () => {
