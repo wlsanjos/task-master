@@ -6,6 +6,7 @@ import { TASK_STATUS_LABELS } from "@/app/_constants/tasks";
 import TaskPriorityBadge from "../_components/type-badge";
 import EditTaskButton from "../_components/edit-task-button";
 import DeleteTaskButton from "../_components/delete-task-button";
+import { formatDate } from "@/app/_lib/date";
 
 export const taskColumns: ColumnDef<Task>[] = [
   {
@@ -25,23 +26,13 @@ export const taskColumns: ColumnDef<Task>[] = [
     accessorKey: "dateStarted",
     header: "Data de Início",
     cell: ({ row: { original: task } }) =>
-      new Date(task.dateStarted).toLocaleDateString("pt-BR", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }),
+      formatDate(new Date(task.dateStarted)),
   },
   {
     accessorKey: "dueDate",
     header: "Data de Vencimento",
     cell: ({ row: { original: task } }) =>
-      task.dueDate
-        ? new Date(task.dueDate).toLocaleDateString("pt-BR", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-          })
-        : "N/A",
+      task.dueDate ? formatDate(new Date(task.dueDate)) : "N/A",
   },
   {
     accessorKey: "priority",
