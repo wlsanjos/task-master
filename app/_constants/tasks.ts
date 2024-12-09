@@ -1,5 +1,11 @@
 import { Status, Priority } from "@prisma/client";
 
+export const TASK_STAUTS_ICONS = {
+  [Status.COMPLETED]: "completed_task.svg",
+  [Status.PENDING]: "pending_task.svg",
+  [Status.IN_PROGRESS]: "in_progress_task.svg",
+};
+
 export const TASK_STATUS_LABELS = {
   COMPLETED: "Completo",
   IN_PROGRESS: "Em Progresso",
