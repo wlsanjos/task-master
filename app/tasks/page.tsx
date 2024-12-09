@@ -4,10 +4,10 @@ import { DataTable } from "../_components/ui/data-table";
 import { ScrollArea } from "../_components/ui/scroll-area";
 import { db } from "../_lib/prisma";
 import { taskColumns } from "./_columns";
-import { auth } from "@/auth";
+import { validateUserSession } from "../_lib/auth/validateUserSession";
 
 const TaskPage = async () => {
-  const session = await auth();
+  const session = await validateUserSession();
 
   const user = session!.user;
 
