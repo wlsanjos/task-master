@@ -1,13 +1,11 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { UserMenu } from "./userMenu";
 import { usePathname } from "next/navigation";
 
 const Navbar = () => {
-  const { data: session } = useSession();
   const pathname = usePathname();
   return (
     <nav className="flex items-center justify-between border-b border-solid px-4 py-4 md:px-8">
@@ -35,7 +33,9 @@ const Navbar = () => {
           Tarefas
         </Link>
       </div>
-      <div className="flex items-center gap-4">{session && <UserMenu />}</div>
+      <div className="flex items-center gap-4">
+        <UserMenu />
+      </div>
     </nav>
   );
 };
