@@ -11,5 +11,4 @@ export const authConfig: NextAuthConfig = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  //session: { strategy: "database" },
 };
